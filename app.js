@@ -110,7 +110,7 @@ allSquares.forEach((square) => {
 });
 
 let startPositionId; // global level. Starts with null. As soon as we drag a piece we get the square-id through the getAttribute function below, which then gets saved to StartPositionId.
-let draggedElement;
+let draggedElement; // could I define these variables at the very top? Would it make any difference?
 
 function dragStart(e) {
   startPositionId = e.target.parentNode.getAttribute("square-id"); // the parentNode points to the square-id. This is equivalent to the startPosition of a piece.
@@ -123,15 +123,62 @@ function dragOver(e) {
 
 function dragDrop(e) {
   e.stopPropagation(); // this prevents any funky behaviour, e.g. dropping two pieces and call this function twice
+  // define a correct turn by saving all draggedElements with a class of "playerTurn" to const correctTurn
   const correctTurn =
-    draggedElement.firstChild.classList.contains("playerTurn"); // define a correct turn by saving all draggedElements with a class of "playerTurn" to const correctTurn
-  const taken = e.target.classList.contains("piece"); // this ensures that a piece can only be taken if there is already a piece on the target square
+    draggedElement.firstChild.classList.contains("playerTurn");
   const opponentTurn = playerTurn === "white" ? "black" : "white";
   const takenByOpponent = e.target.firstChild?.classList.contains(opponentTurn); // check whether the firstChild of the target square exists. If it does, check if the class contains opponentTurn
-  e.target.parentNode.append(draggedElement); // let the draggedElement appear in the target square. This only applies if there already is a piece in the target square. If there isn't, then e.target.append(draggedElement) applies.
-  e.target.remove();
-  // e.target.append(draggedElement);
-  changePlayer(); // how can the programme call the revertIds function already here if it's written only further below in the script?
+  const taken = e.target.classList.contains("piece"); // this ensures that a piece can only be taken if there is already a piece on the target square
+  const valid = checkIfValid(e.target);
+
+  if (correctTurn) {
+    // if the target square is taken by an opponent piece and the move is valid
+    if (takenByOpponent && valid) {
+      e.target.parentNode.append(draggedElement); // let the draggedElement appear in the target square. This only applies if there already is a piece in the target square. If there isn't, then e.target.append(draggedElement) applies (see below).
+      e.target.remove(); // this removes the existing piece from the square
+      changePlayer();
+      return;
+    }
+    // if the target square is taken but not by the opponent (an invalid move)
+    if (taken) {
+      infoDisplay.textContent = "Invalid move";
+      setTimeout(() => (infoDisplay.textContent = ""), 2000); // set a timer of 2 secs, after which remove any wording in the infoDisplay
+      return;
+    }
+    // if the target square is empty and the move is valid
+    if (valid) {
+      e.target.append(draggedElement);
+      changePlayer(); // how can the programme call the this function already here if it's written only further below in the script?
+    }
+  }
+}
+
+function checkIfValid(target) {
+  const targetId =
+    Number(e.target.getAttribute("square-id")) ||
+    Number(e.target.parentNode.getAttribute("square-id")); // the Number() function converts values of other types to numbers
+  const start = Number(startPositionId);
+  const piece = draggedElement.id;
+
+  switch (
+    piece // check how the switch and case operators work
+  ) {
+    case "pawn":
+      const starterRow = [8, 9, 10, 11, 12, 13, 14, 15];
+      if (
+        (starterRow.includes(startId) && startId + width * 2 === targetId) ||
+        startId + width === targetId ||
+        (startId + width - 1 === targetId &&
+          document.querySelector(`[square-id="${startId + width - 1}"]`)
+            .firstChild) ||
+        (startId + width + 1 === targetId &&
+          document.querySelector(`[square-id="${startId + width - 1}"]`)
+            .firstChild)
+      ) {
+        return true;
+      }
+      break;
+  }
 }
 
 // SWITCHING PLAYERS' TURNS
@@ -147,8 +194,8 @@ function changePlayer() {
   }
 }
 
+// I'm confused as to when to use a parameter in a function and when not. Why wouldn't I use "i" here as a parameter?
 function reverseIds() {
-  // I'm confused as to when to use a parameter in a function and when not. Why wouldn't I use "i" here as a parameter?
   const allSquares = document.querySelectorAll(".square"); // grab everything that has the class "square"
   allSquares.forEach((square, i) =>
     // for each square, override the existing squareId with its reverse (width * width - 1) - i
