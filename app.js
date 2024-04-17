@@ -124,14 +124,14 @@ function dragOver(e) {
 function dragDrop(e) {
   e.stopPropagation(); // this prevents any funky behaviour, e.g. dropping two pieces and call this function twice
   // define a correct turn by saving all draggedElements with a class of "playerTurn" to const correctTurn
-  const correctTurn =
-    draggedElement.firstChild.classList.contains("playerTurn");
+  const isCorrectTurn =
+    draggedElement.firstChild.classList.contains(playerTurn);
   const opponentTurn = playerTurn === "white" ? "black" : "white";
   const takenByOpponent = e.target.firstChild?.classList.contains(opponentTurn); // check whether the firstChild of the target square exists. If it does, check if the class contains opponentTurn
   const taken = e.target.classList.contains("piece"); // this ensures that a piece can only be taken if there is already a piece on the target square
   const valid = checkIfValid(e.target);
 
-  if (correctTurn) {
+  if (isCorrectTurn) {
     // if the target square is taken by an opponent piece and the move is valid
     if (takenByOpponent && valid) {
       e.target.parentNode.append(draggedElement); // let the draggedElement appear in the target square. This only applies if there already is a piece in the target square. If there isn't, then e.target.append(draggedElement) applies (see below).
