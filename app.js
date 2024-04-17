@@ -1,4 +1,3 @@
-
 const gameBoard = document.getElementById("gameboard");
 const playerDisplay = document.getElementById("player");
 const infoDisplay = document.getElementById("info-display");
@@ -9,14 +8,70 @@ let playerTurn = "white"; // defining whose move it is
 playerDisplay.textContent = "white"; // showing whose move it is
 
 const startPieces = [
-  rook, knight, bishop, queen, king, bishop, knight, rook,
-  pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn,
-  "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "",
-  "", "", "", "", "", "", "", "",
-  pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn,
-  rook, knight, bishop, queen, king, bishop, knight, rook,
+  rook,
+  knight,
+  bishop,
+  queen,
+  king,
+  bishop,
+  knight,
+  rook,
+  pawn,
+  pawn,
+  pawn,
+  pawn,
+  pawn,
+  pawn,
+  pawn,
+  pawn,
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  pawn,
+  pawn,
+  pawn,
+  pawn,
+  pawn,
+  pawn,
+  pawn,
+  pawn,
+  rook,
+  knight,
+  bishop,
+  queen,
+  king,
+  bishop,
+  knight,
+  rook,
 ];
 
 // CREATING THE INITIAL BOARD
@@ -78,22 +133,59 @@ function dragOver(e) {
 
 function dragDrop(e) {
   e.stopPropagation(); // this prevents any funky behaviour, e.g. dropping two pieces and call this function twice
-  const correctTurn =  // TODO(martin): I would rename this one to isCorrectTurn.
-    // TODO(martin): Here you want to do `playerTurn`, not `"playerTurn"`.
-    //   So it should be:
-    //     draggedElement.firstChild.classList.contains(playerTurn);    -> no " " around playerTurn.
-    //   When you were trying to figure out your issue here with this code, it would be best if you peppered it with
-    //   console.log(...) calls and that way you could confirm is stuff is happening as expected, and then you would
-    //   realize that `correctTurn` is always false, whish is weird, and could investigate why is that.
-    draggedElement.firstChild.classList.contains("playerTurn"); // define a correct turn by saving all draggedElements with a class of "playerTurn" to const correctTurn
-  const taken = e.target.classList.contains("piece"); // this ensures that a piece can only be taken if there is already a piece on the target square
+  const isCorrectTurn =
+    draggedElement.firstChild.classList.contains(playerTurn); // define a correct turn by saving all draggedElements with a class of "playerTurn" to const isCorrectTurn
   const opponentTurn = playerTurn === "white" ? "black" : "white";
   const takenByOpponent = e.target.firstChild?.classList.contains(opponentTurn); // check whether the firstChild of the target square exists. If it does, check if the class contains opponentTurn
-  e.target.parentNode.append(draggedElement); // let the draggedElement appear in the target square. This only applies if there already is a piece in the target square. If there isn't, then e.target.append(draggedElement) applies.
-  e.target.remove();
-  // e.target.append(draggedElement);
-  changePlayer(); // how can the programme call the revertIds function already here if it's written only further below in the script?
-  // TODO(martin): To answer your question: Javascript interpreter first goes through the whole file and reads top level decalrations, which are `function ...`, without going into them. So first it learns about all the functions and remembers where they are. Then, it goes line by line and executes it all. Meaning that function F1 can call F2 even if F2 is below it, because at that point Javasccript already knows where to find it. This is called something like "2-step evluation/compilation/interpretation/something I can't remember exactly". This doesn't work for global varaibles though if I am correct, just functions I think (and classes probably).
+  const taken = e.target.classList.contains("piece"); // this ensures that a piece can only be taken if there is already a piece on the target square
+  const valid = checkIfValid(e.target);
+
+  if (isCorrectTurn) {
+    if (takenByOpponent && valid) {
+      e.target.parentNode.append(draggedElement); // let the draggedElement appear in the target square. This only applies if there already is a piece in the target square. If there isn't, then e.target.append(draggedElement) applies.
+      e.target.remove();
+      changePlayer();
+      return;
+    }
+    if (taken) {
+      infoDisplay.textContent = "This move is invalid";
+      setTimeout(() => (infoDisplay.textContent = ""), 2000);
+      return;
+    }
+    if (valid) {
+      e.target.append(draggedElement);
+      changePlayer();
+    }
+  }
+}
+
+function checkIfValid(target) {
+  const targetId =
+    Number(e.target.getAttribute("square-id")) ||
+    Number(e.target.parentNode.getAttribute("square-id")); // The Number function converts any type of value to numbers
+  const start = Number(startPositionId);
+  const piece = draggedElement.id;
+
+  // DEFINING THE MOVES OF THE VARIOUS PIECES
+  switch (
+    piece // The switch statement evaluates an expression, matching the expression's value against a series of case clauses, and executes statements after the first case clause with a matching value, until a break statement is encountered.
+  ) {
+    case "pawn":
+      const starterRow = [8, 9, 10, 11, 12, 13, 14, 15];
+      if (
+        (starterRow.includes(startId) && startId + width * 2 === targetId) ||
+        startId + width === targetId ||
+        (startId + width - 1 === targetId &&
+          document.querySelector(`[square-id="${startId + width - 1}"]`)
+            .firstChild) ||
+        (startId + width + 1 === targetId &&
+          document.querySelector(`[square-id="${startId + width - 1}"]`)
+            .firstChild)
+      ) {
+        return true;
+      }
+      break;
+  }
 }
 
 // SWITCHING PLAYERS' TURNS
@@ -186,10 +278,3 @@ function revertIds() {
 //   The whole point is, when doing complex stuff like chess rules and logic, you dont' have to dig through `docuemnt` and classes and DOM elements and stuff, you instead always focus on your simple list of lists and all is nice and simple.
 //   So you will want to rewrite your chess like this!
 //   I would suggest you forget drag and drop for start. Just try to get initial board to draw with this MVC approach, and then provide two input fields in your program, where user says initial field and end field, liek F1 and F2 and then they can press "move", and then try to get that move happening. Later we can upgrade that to be drag and drop instead of entering moves via text.
-
-
-
-
-
-
-
