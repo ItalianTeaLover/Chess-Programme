@@ -159,7 +159,7 @@ function dragDrop(e) {
     if (takenByOpponent && valid) {
       e.target.parentNode.append(draggedElement); // let the draggedElement appear in the target square. This only applies if there already is a piece in the target square. If there isn't, then e.target.append(draggedElement) applies.
       e.target.remove(); // remove any existing elements in that square after appending the draggedElement
-      //     checkForVictory();
+      checkForVictory();
       changePlayer();
       return;
     }
@@ -170,7 +170,7 @@ function dragDrop(e) {
     }
     if (valid) {
       e.target.append(draggedElement);
-      //checkForVictory();
+      checkForVictory();
       changePlayer();
       return;
     }
@@ -902,11 +902,11 @@ function revertIds() {
 
 function checkForVictory() {
   const kings = Array.from(document.querySelectorAll("#king"));
-  if (!kings.some(king => king.firstChild.classList.contains(white))) {
+  if (!kings.some(king => king.firstChild.classList.contains(white))) { // if there is no white king in my array of kings, black wins (and vv)
     infoDisplay.innerHTML = "Black wins!";
     const allSquares = document.querySelectorAll(".square");
     allSquares.forEach(square =>
-      square.firstChild?.setAttribute("draggable", false));
+      square.firstChild?.setAttribute("draggable", false)); // once game is over, the pieces should no longer be draggable
   }
   if (!kings.some(king => king.firstChild.classList.contains(black))) {
     infoDisplay.innerHTML = "White wins!";
@@ -914,7 +914,6 @@ function checkForVictory() {
     allSquares.forEach(square =>
       square.firstChild?.setAttribute("draggable", false));
   }
-}
 }
 
 // TODO(Martin): Nice :)! This is actually quite complex code though, hard to reason about, and easy to make mistakes with.
