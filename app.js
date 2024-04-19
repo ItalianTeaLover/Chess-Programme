@@ -135,7 +135,7 @@ allSquares.forEach((square) => {
 let startPositionId; // global level. Starts with null. As soon as we drag a piece we get the square-id through the getAttribute function below, which then gets saved to StartPositionId.
 let draggedElement;
 
-function dragStart(e) {
+function dragStart(e) { // I don't understand what this "e" for event is for.
   startPositionId = e.target.parentNode.getAttribute("square-id"); // the parentNode points to the square-id. This is equivalent to the startPosition of a piece.
   draggedElement = e.target;
 }
