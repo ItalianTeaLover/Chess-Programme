@@ -155,7 +155,7 @@ function dragDrop(e) {
   if (isCorrectTurn) {
     if (takenByOpponent && valid) {
       e.target.parentNode.append(draggedElement); // let the draggedElement appear in the target square. This only applies if there already is a piece in the target square. If there isn't, then e.target.append(draggedElement) applies.
-      e.target.remove();
+      e.target.remove(); // remove any existing elements in that square after appending the draggedElement 
       checkForVictory();
       changePlayer();
       return;
