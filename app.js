@@ -902,17 +902,20 @@ function revertIds() {
 
 function checkForVictory() {
   const kings = Array.from(document.querySelectorAll("#king"));
-  if (!kings.some(king => king.firstChild.classList.contains(white))) { // if there is no white king in my array of kings, black wins (and vv)
+  if (!kings.some((king) => king.firstChild.classList.contains(white))) {
+    // if there is no white king in my array of kings, black wins (and vv)
     infoDisplay.innerHTML = "Black wins!";
     const allSquares = document.querySelectorAll(".square");
-    allSquares.forEach(square =>
-      square.firstChild?.setAttribute("draggable", false)); // once game is over, the pieces should no longer be draggable
+    allSquares.forEach((square) =>
+      square.firstChild?.setAttribute("draggable", false)
+    ); // once game is over, the pieces should no longer be draggable
   }
-  if (!kings.some(king => king.firstChild.classList.contains(black))) {
+  if (!kings.some((king) => king.firstChild.classList.contains(black))) {
     infoDisplay.innerHTML = "White wins!";
     const allSquares = document.querySelectorAll(".square");
-    allSquares.forEach(square =>
-      square.firstChild?.setAttribute("draggable", false));
+    allSquares.forEach((square) =>
+      square.firstChild?.setAttribute("draggable", false)
+    );
   }
 }
 
