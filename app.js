@@ -150,7 +150,7 @@ function dragDrop(e) {
     draggedElement.firstChild.classList.contains(playerTurn); // define a correct turn by saving all draggedElements with a class of "playerTurn" to const isCorrectTurn
   const opponentTurn = playerTurn === "white" ? "black" : "white";
   const takenByOpponent = e.target.firstChild?.classList.contains(opponentTurn); // check whether the firstChild of the target square exists. If it does, check if the class contains opponentTurn
-  const taken = e.target.classList.contains("piece"); // this ensures that a piece can only be taken if there is already a piece on the target square
+  const taken = e.target.classList.contains(piece); // this ensures that a piece can only be taken if there is already a piece on the target square
   const valid = checkIfValid(e.target);
 
   if (isCorrectTurn) {
@@ -901,14 +901,14 @@ function revertIds() {
 
 function checkForVictory() {
   const kings = Array.from(document.querySelectorAll("#king"));
-  if (kings.some((king) => king.firstChild.classList.contains("white"))) {
+  if (kings.some((king) => king.firstChild.classList.contains(white))) {
     infoDisplay.innerHTML = "Black wins!";
     const allSquares = document.querySelectorAll(".square");
     allSquares.forEach((square) =>
       square.firstChild?.setAttribute("draggable", false)
     );
   }
-  if (kings.some((king) => king.firstChild.classList.contains("black"))) {
+  if (kings.some((king) => king.firstChild.classList.contains(black))) {
     infoDisplay.innerHTML = "White wins!";
     const allSquares = document.querySelectorAll(".square");
     allSquares.forEach((square) =>
