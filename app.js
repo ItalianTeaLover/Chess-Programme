@@ -177,7 +177,7 @@ function dragDrop(e) {
   }
 }
 
-function checkIfValid(e, target) {
+function checkIfValid(target, e) {
   const targetId =
     Number(e.target.getAttribute("square-id")) ||
     Number(e.target.parentNode.getAttribute("square-id")); // The Number function converts any type of value to numbers
