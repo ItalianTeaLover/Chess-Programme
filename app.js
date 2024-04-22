@@ -150,7 +150,7 @@ function dragDrop(e) {
   const isCorrectTurn =
     draggedElement.firstChild.classList.contains(playerTurn); // define a correct turn by saving all draggedElements with a class of "playerTurn" to const isCorrectTurn
 
-  const taken = e.target.classList.contains("piece"); // this ensures that a piece can only be taken if there is already a piece on the target square
+  const taken = e.target.firstChild !== null; // this ensures that a piece can only be taken if there is already a piece on the target square
   const valid = checkIfValid(e.target, e);
   const opponentTurn = playerTurn === "white" ? "black" : "white";
   const takenByOpponent = e.target.firstChild?.classList.contains(opponentTurn); // check whether the firstChild of the target square exists. If it does, check if the class contains opponentTurn
@@ -158,7 +158,7 @@ function dragDrop(e) {
   if (isCorrectTurn) {
     if (takenByOpponent && valid) {
       e.target.append(draggedElement); // let the draggedElement appear in the target square. This only applies if there already is a piece in the target square. If there isn't, then e.target.append(draggedElement) applies.
-      e.target.remove(); // remove any existing elements in that square after appending the draggedElement
+      e.target.removeChild(e.target.firstChild); // remove any existing elements in that square after appending the draggedElement
       checkForVictory();
       changePlayer();
       return;
@@ -168,7 +168,7 @@ function dragDrop(e) {
       setTimeout(() => (infoDisplay.textContent = ""), 2000);
       return;
     }
-    if (valid) {
+    if (isCorrectTurn && !taken && valid) {
       e.target.append(draggedElement);
       checkForVictory();
       changePlayer();
