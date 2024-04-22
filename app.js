@@ -150,14 +150,14 @@ function dragDrop(e) {
   const isCorrectTurn =
     draggedElement.firstChild.classList.contains(playerTurn); // define a correct turn by saving all draggedElements with a class of "playerTurn" to const isCorrectTurn
 
-  const taken = e.target.classList.contains(piece); // this ensures that a piece can only be taken if there is already a piece on the target square
+  const taken = e.target.classList.contains("piece"); // this ensures that a piece can only be taken if there is already a piece on the target square
   const valid = checkIfValid(e.target);
   const opponentTurn = playerTurn === "white" ? "black" : "white";
   const takenByOpponent = e.target.firstChild?.classList.contains(opponentTurn); // check whether the firstChild of the target square exists. If it does, check if the class contains opponentTurn
 
   if (isCorrectTurn) {
     if (takenByOpponent && valid) {
-      e.target.parentNode.append(draggedElement); // let the draggedElement appear in the target square. This only applies if there already is a piece in the target square. If there isn't, then e.target.append(draggedElement) applies.
+      e.target.append(draggedElement); // let the draggedElement appear in the target square. This only applies if there already is a piece in the target square. If there isn't, then e.target.append(draggedElement) applies.
       e.target.remove(); // remove any existing elements in that square after appending the draggedElement
       checkForVictory();
       changePlayer();
@@ -177,7 +177,7 @@ function dragDrop(e) {
   }
 }
 
-function checkIfValid(target) {
+function checkIfValid(e, target) {
   const targetId =
     Number(e.target.getAttribute("square-id")) ||
     Number(e.target.parentNode.getAttribute("square-id")); // The Number function converts any type of value to numbers
@@ -902,7 +902,7 @@ function revertIds() {
 
 function checkForVictory() {
   const kings = Array.from(document.querySelectorAll("#king"));
-  if (!kings.some((king) => king.firstChild.classList.contains(white))) {
+  if (!kings.some((king) => king.firstChild.classList.contains("white"))) {
     // if there is no white king in my array of kings, black wins (and vv)
     infoDisplay.innerHTML = "Black wins!";
     const allSquares = document.querySelectorAll(".square");
@@ -910,7 +910,7 @@ function checkForVictory() {
       square.firstChild?.setAttribute("draggable", false)
     ); // once game is over, the pieces should no longer be draggable
   }
-  if (!kings.some((king) => king.firstChild.classList.contains(black))) {
+  if (!kings.some((king) => king.firstChild.classList.contains("black"))) {
     infoDisplay.innerHTML = "White wins!";
     const allSquares = document.querySelectorAll(".square");
     allSquares.forEach((square) =>
