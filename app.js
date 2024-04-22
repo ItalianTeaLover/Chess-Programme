@@ -123,8 +123,8 @@ createInitialBoard();
 const allSquares = document.querySelectorAll(".square"); // grab all squares (i.e. every HTML element with the class "square") and save them as const allSquares
 
 allSquares.forEach((square) => {
-  square.addEventListener("dragStart", dragStart); // listen out for a dragsStart even, and when it starts call the dragStart function
-  square.addEventListener("dragOver", dragOver); // I don't understand: how does the programme know what dragStart, dragOver and drop are?
+  square.addEventListener("dragstart", dragStart); // listen out for a dragstart event, and when it starts call the dragStart function
+  square.addEventListener("dragover", dragOver);
   square.addEventListener("drop", dragDrop);
 });
 
